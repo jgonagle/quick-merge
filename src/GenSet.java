@@ -6,7 +6,7 @@ public class GenSet<T extends Comparable<T>> {
 
 	@SuppressWarnings("unchecked")
 	public GenSet(int arrayLength) {
-	    genericSet = (T[]) Array.newInstance((Class<T>) Comparable.class, arrayLength);
+	    genericSet = (T[]) Array.newInstance(Comparable.class, arrayLength);
 	    newIndexMapping();
 	}
 	

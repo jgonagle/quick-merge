@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class QuickMerge<T extends Comparable<T>> {
@@ -207,21 +208,48 @@ public class QuickMerge<T extends Comparable<T>> {
 		QuickMerge<Integer> sorter = new QuickMerge<Integer>();
 		
 		long start, end;
-		int comparisonsMade = 0;
-		int setSize = 100;
+		int randomComparisonsMade = 0, sortedComparisonsMade = 0, reversedComparisonsMade = 0;
+                double randomTime = 0.0, sortedTime = 0.0, reversedTime = 0.0;
+		int setSize = 1000000;
+		int numRuns = 30;
 		
-		GenSet<Integer> testSet = new GenSet<Integer>(setSize);
-		randomizeGenSet(testSet, true);
+		GenSet<Integer> randomTestSet = new GenSet<Integer>(setSize);
+                GenSet<Integer> sortedTestSet = new GenSet<Integer>(setSize);
+                GenSet<Integer> reversedTestSet = new GenSet<Integer>(setSize);
 		
-		//GenSet<Integer> testSet = new GenSet<Integer>(new Integer[]{2, 9, 5, 1, 8, 3, 6, 7, 4});
+		for (int  n = 0; n < numRuns; n++) {
 		
-		start = System.currentTimeMillis();
-		comparisonsMade += sorter.quickMergeSort(testSet);
-		end = System.currentTimeMillis();
-		
-		testSet.print();
-		testSet.rearrange().print();
-		
-		System.out.println(testSet.size() + " : " + comparisonsMade + " over " + ((end - start) / 1000.0) + " s");
+                    randomizeGenSet(randomTestSet, true);
+                    
+                    Integer[] sortedIntegerArray = new Integer[setSize];
+                    Integer[] reversedIntegerArray = new Integer[setSize];
+                    
+                    for (int i = 0; i < setSize; i++) {
+                        sortedIntegerArray[i] = i;
+                        reversedIntegerArray[i] = setSize - i - 1;                    
+                    }
+                    
+                    sortedTestSet = new GenSet<Integer>(sortedIntegerArray);
+                    reversedTestSet = new GenSet<Integer>(reversedIntegerArray);
+                    
+                    start = System.currentTimeMillis();
+                    randomComparisonsMade += sorter.quickMergeSort(randomTestSet);
+                    end = System.currentTimeMillis();
+                    randomTime += (end - start) / 1000.0;                    
+                    
+                    start = System.currentTimeMillis();
+                    sortedComparisonsMade += sorter.quickMergeSort(sortedTestSet);
+                    end = System.currentTimeMillis();
+                    sortedTime += (end - start) / 1000.0;
+                                        
+                    start = System.currentTimeMillis();
+                    reversedComparisonsMade += sorter.quickMergeSort(reversedTestSet);
+                    end = System.currentTimeMillis();
+                    reversedTime += (end - start) / 1000.0;                    
+                }
+                
+                System.out.println(randomTestSet.size() + " randomized items sorted by QuickMerge in " + (randomComparisonsMade / numRuns) + " comparisons over " + (randomTime / numRuns) + " s on average");
+                System.out.println(sortedTestSet.size() + " sorted items sorted by QuickMerge in " + (sortedComparisonsMade / numRuns) + " comparisons over " + (sortedTime / numRuns) + " s on average");
+                System.out.println(reversedTestSet.size() + " reversed items sorted by QuickMerge in " + (reversedComparisonsMade / numRuns) + " comparisons over " + (reversedTime / numRuns) + " s on average");
 	}
 }
